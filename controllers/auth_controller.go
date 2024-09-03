@@ -4,7 +4,6 @@ import (
 	"apimandiri/middlewares"
 	"apimandiri/services"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -37,10 +36,18 @@ func (c *authController) Login(ctx *gin.Context) {
 		return
 	}
 
-	sessionID := user.Username
-	middlewares.Sessions[sessionID] = time.Now()
+	// Generate JWT token
+	token, err := middlewares.GenerateJWT(user.Username)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "gagal membuat token"})
+		return
+	}
 
-	ctx.JSON(http.StatusOK, gin.H{"pesan": "Login sukses"})
+	// Respond with the token
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
+		"pesan": "Login sukses",
+	})
 }
 
 func (c *authController) Logout(ctx *gin.Context) {
