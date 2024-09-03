@@ -15,7 +15,7 @@ func InitRouter(authController controllers.AuthController, userController contro
 	r.POST("/logout", authController.Logout)
 
 	protected := r.Group("/")
-	protected.Use(middlewares.AuthMiddleware())
+	protected.Use(middlewares.JWTMiddleware())
 	protected.POST("/users", userController.CreateUser)
 	protected.GET("/users", userController.GetAllUsers)
 	protected.GET("/users/:id", userController.GetUserByID)
