@@ -51,11 +51,10 @@ func (c *authController) Login(ctx *gin.Context) {
 }
 
 func (c *authController) Logout(ctx *gin.Context) {
-	sessionID := ctx.GetHeader("Session-ID")
-	if sessionID == "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Session-ID dibutuhkan"})
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Token Authorization dibutuhkan"})
 		return
 	}
-	delete(middlewares.Sessions, sessionID)
-	ctx.JSON(http.StatusOK, gin.H{"pesan": "Logout sukses"})
+	ctx.JSON(http.StatusOK, gin.H{"pesan": "Logout sukses, mohon hapus token Authorization"})
 }
